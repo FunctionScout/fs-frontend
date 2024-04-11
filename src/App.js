@@ -1,48 +1,76 @@
 import './App.css';
-import React, {Component} from 'react';
-import axios from 'axios';
+import React, { useState } from 'react';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+function App() {
+  const [showModal, setShowModal] = useState(false);
+  const [inputValue, setInputValue] = useState('');
 
-  componentDidMount() {
-    this.getDemoResponse();
-  }
+  const handleAddClick = () => {
+    setShowModal(true);
+  };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.val !== prevProps.val) {
-      this.getDemoResponse();
-    }
-  }
+  const handleModalClose = () => {
+    setShowModal(false);
+    setInputValue(''); // Reset input field when modal closes
+  };
 
-  getDemoResponse() {
-    const url = "http://localhost:8080/demo";
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
 
-    axios.get(url)
-    .then(response => this.setState(
-      {
-        response: response
-      }
-    ))
-    .catch(error => {
-      console.log(error);
-    });
-  }
+  const handleAddItem = () => {
+    // Handle adding item here, you can perform any necessary action with inputValue
+    // For now, just close the modal
+    handleModalClose();
+  };
 
-  render() {
-    return (
-      <div className="App">
-        {this.state.response ? (
-          <>Data from backend: {this.state.response.data}</>
-        ) : (
-          <>No data from backend, yet</>
-        )}
+  return (
+    <div className="container">
+      <div className="vertical-navbar">
+        <ul>
+          <li>FunctionScout</li>
+          <li><a href="/dashboard">Dashboard</a></li>
+        </ul>
       </div>
-    );
-  }
+      <div className="content">
+        <div className="header">
+          <h2>Services</h2>
+          <button className="btn" onClick={handleAddClick}>Add Service</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href='/service'>Service 1</a></td>
+            </tr>
+            <tr>
+              <td><a href='/service'>Service 2</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {showModal && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleModalClose}>&times;</span>
+            <h2>Add Service</h2>
+            <input
+              type="text"
+              value={inputValue}
+              onChange={handleInputChange}
+              placeholder="Enter github URL"
+            />
+            <button onClick={handleAddItem}>Add</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 export default App;
