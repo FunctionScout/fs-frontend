@@ -26,21 +26,22 @@ class App extends Component {
       {
         response: response
       }
-    ));
+    ))
+    .catch(error => {
+      console.log(error);
+    });
   }
 
   render() {
-    if (this.state.response) {
-      return (
-        <div className="App">
-          Data from backend: {this.state.response.data}
-        </div>
-      );
-    } else {
-      <div>
-          No data from backend
+    return (
+      <div className="App">
+        {this.state.response ? (
+          <>Data from backend: {this.state.response.data}</>
+        ) : (
+          <>No data from backend</>
+        )}
       </div>
-    }
+    );
   }
 }
 
