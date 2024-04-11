@@ -38,7 +38,7 @@ class App extends Component {
         {this.state.response ? (
           <>Data from backend: {this.state.response.data}</>
         ) : (
-          <>No data from backend</>
+          <>No data from backend, yet</>
         )}
       </div>
     );
