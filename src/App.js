@@ -1,9 +1,13 @@
 import './App.css';
 import React, { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Navbar } from './pages/Navbar';
+import { Dashboard } from './pages/Dashboard';
+import { ServiceDetail } from './pages/ServiceDetail';
+import { AddService } from './pages/AddService';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
-  const [inputValue, setInputValue] = useState('');
 
   const handleAddClick = () => {
     setShowModal(true);
@@ -11,64 +15,29 @@ function App() {
 
   const handleModalClose = () => {
     setShowModal(false);
-    setInputValue(''); // Reset input field when modal closes
   };
 
-  const handleInputChange = (e) => {
-    setInputValue(e.target.value);
-  };
-
-  const handleAddItem = () => {
-    // Handle adding item here, you can perform any necessary action with inputValue
-    // For now, just close the modal
-    handleModalClose();
+  const handleAddItem = (newService) => {
+     console.log('New service added:', newService);
   };
 
   return (
     <div className="container">
-      <div className="vertical-navbar">
-        <ul>
-          <li>FunctionScout</li>
-          <li><a href="/dashboard">Dashboard</a></li>
-        </ul>
-      </div>
-      <div className="content">
-        <div className="header">
-          <h2>Services</h2>
-          <button className="btn" onClick={handleAddClick}>Add Service</button>
-        </div>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><a href='/service'>Service 1</a></td>
-            </tr>
-            <tr>
-              <td><a href='/service'>Service 2</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={handleModalClose}>&times;</span>
-            <h2>Add Service</h2>
-            <input
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-              placeholder="Enter github URL"
-            />
-            <button onClick={handleAddItem}>Add</button>
+      <Router>
+        <Navbar />
+          <div className="content">
+            <Routes>
+              <Route path='/' element={<Dashboard />} />
+              <Route path='/dashboard' element={<Dashboard handleAddClick={handleAddClick}/>} />
+              <Route path="/service/:service_name" element={<ServiceDetail />} />
+            </Routes>
           </div>
-        </div>
-      )}
+        <AddService 
+          isOpen={showModal} 
+          onClose={handleModalClose} 
+          onAddItem={handleAddItem} 
+        />
+      </Router>
     </div>
   );
 }
