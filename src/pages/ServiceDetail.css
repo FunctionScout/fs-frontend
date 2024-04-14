@@ -1,0 +1,8 @@
+.container {
+    display: flex;
+}
+ 
+.item {
+    min-width: 10rem;
+    text-align: left;
+}
