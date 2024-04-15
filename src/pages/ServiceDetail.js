@@ -196,17 +196,17 @@ function UnusedCode({ service_name }) {
   const data = [
     {
       name: (
-        <Link to={"/service/" + service_name + "/function/f1"}>Function 1</Link>
+        <Link to={"/service/" + service_name + "/function/f5"}>Function 5</Link>
       ),
-      githubLink: <a href="https://github.com/servicex/f1">https://github.com/servicex/f1</a>,
-      label: "f1"
+      githubLink: <a href="https://github.com/servicex/f5">https://github.com/servicex/f5</a>,
+      label: "f5"
     },
     {
       name: (
-        <Link to={"/service/" + service_name + "/function/f10"}>Function 10</Link>
+        <Link to={"/service/" + service_name + "/function/f6"}>Function 6</Link>
       ),
-      githubLink: <a href="https://github.com/servicex/f10">https://github.com/servicex/f10</a>,
-      label: "f10"
+      githubLink: <a href="https://github.com/servicex/f6">https://github.com/servicex/f6</a>,
+      label: "f6"
     }
   ];
 
@@ -224,7 +224,11 @@ function ExpandedFunction({ data }) {
   const language = "java";
   const showLineNumbers = true;
   const code = `private void ${data.label}(int value, List<Object> objects) { 
-      ... 
+    for (Object obj: objects)  {
+      if (obj.val == value) {
+        System.out.println("Found it!");
+      }
+    }
 }`
 
   return (
