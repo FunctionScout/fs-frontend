@@ -28,7 +28,9 @@ export function ServiceDetail() {
   
     return (
       <div>
-        <h2>{service_name}</h2>
+          <h2>Services
+            <span style={{fontSize: "20px"}}>{` --> ${service_name}`}</span>
+          </h2>
         
         <div style={{width: '180px'}}>
           <Select

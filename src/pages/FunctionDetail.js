@@ -13,7 +13,11 @@ export function FunctionDetail() {
 
     return (
         <div>
-            <h2>Service: {service_name }, Function: {function_name}</h2>
+            <h2>Services
+                <span style={{fontSize: "20px"}}>{` --> ${service_name}`}
+                    <span style={{fontSize: "18px"}}>{` --> ${function_name}`}</span>
+                </span>
+            </h2>
 
             <CodeBlock
                 text={code}
