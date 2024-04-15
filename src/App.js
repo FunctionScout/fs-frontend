@@ -5,6 +5,7 @@ import { Navbar } from './pages/Navbar';
 import { Dashboard } from './pages/Dashboard';
 import { ServiceDetail } from './pages/ServiceDetail';
 import { AddService } from './pages/AddService';
+import { FunctionDetail } from './pages/FunctionDetail';
 
 function App() {
   const [showModal, setShowModal] = useState(false);
@@ -30,6 +31,7 @@ function App() {
               <Route path='/' element={<Dashboard />} />
               <Route path='/dashboard' element={<Dashboard handleAddClick={handleAddClick}/>} />
               <Route path="/service/:service_name" element={<ServiceDetail />} />
+              <Route path="/service/:service_name/function/:function_name" element={<FunctionDetail />} />
             </Routes>
           </div>
         <AddService 
