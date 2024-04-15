@@ -28,18 +28,19 @@ function App() {
         <Navbar />
           <div className="content">
             <Routes>
-              <Route path='/' element={<Dashboard />} />
+              <Route path='/' element={<Dashboard handleAddClick={handleAddClick}/> } />
               <Route path='/dashboard' element={<Dashboard handleAddClick={handleAddClick}/>} />
               <Route path="/service/:service_name" element={<ServiceDetail />} />
               <Route path="/service/:service_name/function/:function_name" element={<FunctionDetail />} />
             </Routes>
           </div>
-        <AddService 
+      </Router>
+
+      <AddService 
           isOpen={showModal} 
           onClose={handleModalClose} 
           onAddItem={handleAddItem} 
         />
-      </Router>
     </div>
   );
 }

@@ -14,6 +14,7 @@ export function Dashboard({handleAddClick}) {
         <h2>Services</h2>
         <button className="btn" onClick={handleAddClick}>Add Service</button>
       </div>
+      
       <table>
         <thead>
           <tr>
