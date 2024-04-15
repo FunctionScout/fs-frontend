@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { CodeBlock, github } from 'react-code-blocks';
 import DataTable from 'react-data-table-component';
+import { usedFunctionDetails } from './MockData';
 
 export function FunctionDetail() {
     const { service_name, function_name } = useParams();
@@ -20,13 +21,13 @@ export function FunctionDetail() {
                 showLineNumbers={showLineNumbers}
                 theme={github}
             />
-
-            <DependentServices />
+            
+            <DependentServices function_name={function_name}/>
         </div>
     );
 }
 
-function DependentServices() {
+function DependentServices({ function_name }) {
     const columns = [
         {
             name: 'Name',
@@ -38,29 +39,14 @@ function DependentServices() {
         }
     ];
 
-    const data = [
-        {
-            name: "Service 5",
-            githubLink: (<a href="https://github.com/service5"> https://github.com/service5</a>)
-        },
-        {
-            name: "Service 12",
-            githubLink: (<a href="https://github.com/service12"> https://github.com/service12</a>)
-        },
-        {
-            name: "Service 3",
-            githubLink: (<a href="https://github.com/service3"> https://github.com/service3</a>)
-        },
-        {
-            name: "Service 9",
-            githubLink: (<a href="https://github.com/service9"> https://github.com/service9</a>)
-        }
-    ]
-
     return (
-    <DataTable
-        columns={columns}
-        data={data}
-    />
+        <div>
+            <h4>These are the services depending on function {`"${function_name}"`}</h4>
+
+            <DataTable
+                columns={columns}
+                data={usedFunctionDetails[function_name].dependents}
+            />
+        </div>
     );
 }

@@ -1,13 +1,8 @@
 import { Link } from 'react-router-dom';
+import { services } from './MockData';
 import '../App.css';
 
 export function Dashboard({handleAddClick}) {
-  // Dummy data
-  const services = [
-    { id: 1, name: 'Service 1'},
-    { id: 2, name: 'Service 2'}
-  ];
-
   return (
     <div>
       <div className="header">
@@ -23,8 +18,8 @@ export function Dashboard({handleAddClick}) {
         </thead>
         <tbody>
           {services.map((service) => (
-            <tr key={"/service/" + service.name}>
-              <td><Link to={"/service/" + service.name}>{service.name}</Link></td>
+            <tr key={"/service/" + service}>
+              <td><Link to={"/service/" + service}>{service}</Link></td>
             </tr>
           ))}
         </tbody>
