@@ -7,6 +7,7 @@ export function Navbar() {
         <ul>
           <li>FunctionScout</li>
           <li><Link to="/dashboard">Dashboard</Link></li>
+          <li><Link to="/status">Status</Link></li>
         </ul>
       </div>
     );
