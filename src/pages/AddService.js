@@ -13,7 +13,7 @@ export function AddService({ isOpen, onClose, onAddItem }) {
     setIsLoading(true); // Set loading state to true
 
     try {
-      const response = await fetch('http://localhost:8080/api/services', {
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/services', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ githubUrl: inputValue }),

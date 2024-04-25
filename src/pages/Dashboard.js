@@ -19,7 +19,7 @@ export function Dashboard() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/api/services');
+      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/api/services');
 
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
