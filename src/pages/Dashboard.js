@@ -54,7 +54,7 @@ export function Dashboard() {
 
   const serviceData = services.map((service) => {
     const { owner, repo } = getOwnerAndRepoFromUrl(service.githubUrl);
-    return { service, owner, repo };
+    return { ...service, owner, repo };
   });
 
   return (
@@ -77,14 +77,16 @@ export function Dashboard() {
           <thead>
             <tr>
               <th>Name</th>
+              <th>GithubUrl</th>
               <th>Status</th>
             </tr>
           </thead>
           <tbody>
             {serviceData.map((service) => (
-              <tr key={service.service.githubUrl}>
-                <td><Link to={"/service/"}>{service.repo}</Link></td>
-                <td>{service.service.status}</td>
+              <tr key={service.githubUrl}>
+                <td><Link to={"/service/" + service.owner + "__" + service.repo} state={{id: service.id}}>{service.repo}</Link></td>
+                <td>{service.githubUrl}</td>
+                <td>{service.status}</td>
               </tr>
             ))}
           </tbody>

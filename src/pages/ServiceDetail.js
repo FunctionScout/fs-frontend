@@ -1,5 +1,5 @@
-import { useParams } from 'react-router-dom';
-import { useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { CodeBlock, github } from 'react-code-blocks';
@@ -7,6 +7,8 @@ import { serviceDetails } from './MockData';
 
 export function ServiceDetail() {
     const { service_name } = useParams();
+    const location = useLocation();
+    const serviceId = location.state.id;
 
     const options = [
       { value: 'dependencies', label: 'Dependencies'},
@@ -18,11 +20,11 @@ export function ServiceDetail() {
 
     const renderComponent = () => {
       if(selectedOption.value === 'dependencies') {
-        return <Dependencies service_name={service_name} />
+        return <Dependencies service_id={serviceId} service_name={service_name} />
       } else if(selectedOption.value === 'functions') {
-        return <Functions service_name={service_name} />
+        return <Functions service_id={serviceId} />
       } else if(selectedOption.value === 'unusedCode') {
-        return <UnusedCode service_name={service_name} />
+        return <UnusedCode service_id={serviceId} />
       }
     }
   
@@ -47,7 +49,7 @@ export function ServiceDetail() {
     );
 }
 
-function Dependencies({ service_name }) {
+function Dependencies({ service_id, service_name }) {
   const columns = [
     {
       name: 'Name',
@@ -58,13 +60,34 @@ function Dependencies({ service_name }) {
       selector: row => row.type,
     }
   ];
+
+  const [dependencies, setDependencies] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${service_id}`);
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setDependencies(data.dependencies);
+      } catch (error) {
+        console.error("Error fetching webservice dependencies:", error);
+      }
+    };
+
+    fetchData();
+  }, [service_id]);
   
   return (
     <div>
-      <h3>These are the dependencies of {`"${service_name}"`}<span style={{fontSize: "13px"}}>(Expand the dependencies to see the used functions)</span></h3>
+      <h3>These are the dependencies of the selected service <span style={{fontSize: "13px"}}>(Expand the dependencies to see the used functions)</span></h3>
       <DataTable
         columns={columns}
-        data={serviceDetails[service_name].dependencies}
+        data={dependencies}
         expandableRows
         expandableRowsComponent={ExpandedDependency}
       />
