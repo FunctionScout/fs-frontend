@@ -20,7 +20,7 @@ export function ServiceDetail() {
 
     const renderComponent = () => {
       if(selectedOption.value === 'dependencies') {
-        return <Dependencies service_id={serviceId} service_name={service_name} />
+        return <Dependencies service_id={serviceId} />
       } else if(selectedOption.value === 'functions') {
         return <Functions service_id={serviceId} />
       } else if(selectedOption.value === 'unusedCode') {
@@ -49,7 +49,7 @@ export function ServiceDetail() {
     );
 }
 
-function Dependencies({ service_id, service_name }) {
+function Dependencies({ service_id }) {
   const columns = [
     {
       name: 'Name',

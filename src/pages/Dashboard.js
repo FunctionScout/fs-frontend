@@ -84,7 +84,14 @@ export function Dashboard() {
           <tbody>
             {serviceData.map((service) => (
               <tr key={service.githubUrl}>
-                <td><Link to={"/service/" + service.owner + "__" + service.repo} state={{id: service.id}}>{service.repo}</Link></td>
+                <td>
+                  {service.status === 'SUCCESS' && (
+                    <Link to={`/service/${service.owner}__${service.repo}`} state={{ id: service.id }}>
+                      {service.repo}
+                    </Link>
+                  )}
+                  {service.status !== 'SUCCESS' && <span>{service.repo}</span>}
+                </td>
                 <td>{service.githubUrl}</td>
                 <td>{service.status}</td>
               </tr>
