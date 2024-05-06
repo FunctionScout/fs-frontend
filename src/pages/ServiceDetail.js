@@ -1,4 +1,4 @@
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
@@ -22,7 +22,7 @@ export function ServiceDetail() {
       if(selectedOption.value === 'dependencies') {
         return <Dependencies service_id={serviceId} />
       } else if(selectedOption.value === 'functions') {
-        return <Functions service_id={serviceId} />
+        return <Functions service_id={serviceId} service_name={service_name}/>
       } else if(selectedOption.value === 'unusedCode') {
         return <UnusedCode service_id={serviceId} />
       }
@@ -42,7 +42,7 @@ export function ServiceDetail() {
           />
         </div>
         
-        {console.log('Selected option is: ' + JSON.stringify(selectedOption))}
+        {/* {console.log('Selected option is: ' + JSON.stringify(selectedOption))} */}
 
         {renderComponent()}
       </div>
@@ -66,7 +66,7 @@ function Dependencies({ service_id }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${service_id}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${service_id}/dependencies`);
 
         if (!response.ok) {
           throw new Error(`API request failed with status ${response.status}`);
@@ -75,7 +75,7 @@ function Dependencies({ service_id }) {
         const data = await response.json();
         setDependencies(data.dependencies);
       } catch (error) {
-        console.error("Error fetching webservice dependencies:", error);
+        console.error("Error fetching webservice dependencies: ", error);
       }
     };
 
@@ -115,24 +115,56 @@ function ExpandedDependency({ data }) {
   );
 }
 
-function Functions({ service_name }) {
+function getFunctionObject(service_name, funcObj) {
+  const functionRoute = `/service/${service_name}/function/${funcObj.name}`;
+
+  return  {
+      name: <Link to={functionRoute} state={{ id: funcObj.id }}>{funcObj.name}</Link>,
+      clazz: funcObj.clazz,
+  };
+}
+
+function Functions({ service_id, service_name }) {
   const columns = [
     {
       name: 'Name',
       selector: row => row.name,
     },
     {
-      name: 'GithubLink',
-      selector: row => row.githubLink,
+      name: 'Class',
+      selector: row => row.clazz,
     }
   ];
+
+  const [functions, setFunctions] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${service_id}/functions`);
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setFunctions(data.functions.map(funcObj => {
+          return getFunctionObject(service_name, funcObj);
+        }));
+      } catch (error) {
+        console.error("Error fetching webservice functions: ", error);
+      }
+    };
+
+    fetchData();
+  }, [service_id, service_name]);
 
   return (
     <div>
       <h3>These are the exposed functions of {`"${service_name}"`}</h3>
       <DataTable
         columns={columns}
-        data={serviceDetails[service_name].usedFunctions}
+        data={functions}
       />
     </div>
   );

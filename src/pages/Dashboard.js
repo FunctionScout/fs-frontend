@@ -86,7 +86,7 @@ export function Dashboard() {
               <tr key={service.githubUrl}>
                 <td>
                   {service.status === 'SUCCESS' && (
-                    <Link to={`/service/${service.owner}__${service.repo}`} state={{ id: service.id }}>
+                    <Link to={`/service/${service.repo}`} state={{ id: service.id }}>
                       {service.repo}
                     </Link>
                   )}
