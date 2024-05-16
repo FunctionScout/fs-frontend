@@ -102,15 +102,15 @@ function ExpandedDependency({ data }) {
       selector: row => row.name,
     },
     {
-      name: 'GithubLink',
-      selector: row => row.githubLink,
+      name: 'Class',
+      selector: row => row.clazz,
     }
   ];
 
   return (
     <DataTable
       columns={columns}
-      data={data.functions}
+      data={data.usedFunctions}
     />
   );
 }
