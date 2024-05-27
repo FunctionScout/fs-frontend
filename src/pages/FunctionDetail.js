@@ -1,4 +1,4 @@
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { CodeBlock, github } from 'react-code-blocks';
 import DataTable from 'react-data-table-component';
@@ -46,31 +46,53 @@ export function FunctionDetail() {
                 theme={github}
             />
             
-            <DependentServices function_name={function_name}/>
+            <DependentServices functionDetail={functionDetail}/>
         </div>
     );
 }
 
-function DependentServices({ function_name }) {
+function DependentServices({ functionDetail }) {
     const columns = [
         {
             name: 'Name',
             selector: row => row.name,
-        },
-        {
-            name: 'GithubLink',
-            selector: row => row.githubLink,
         }
     ];
 
+    var dependentServices = [];
+
+    if (functionDetail.dependentServices != null) {
+        dependentServices = functionDetail.dependentServices.map(dependentService => {
+            return getServiceObject(dependentService)
+        });
+    }
+
     return (
         <div>
-            <h4>These are the services depending on function {`"${function_name}"`}</h4>
+            <h4>These are the services depending on function {`"${functionDetail.name}"`}</h4>
 
             <DataTable
                 columns={columns}
-                data={[]}
+                data={dependentServices}
             />
         </div>
     );
 }
+
+function getServiceObject(dependentService) {
+    const { repo } = getRepoFromUrl(dependentService.githubUrl);
+
+    return  {
+        name: <Link to={`/service/${repo}`} state={{ id: dependentService.id }}>{repo}</Link>
+    };
+  }
+
+const getRepoFromUrl = (url) => {
+    const regex = /^(?:https?:\/\/)?github.com\/(.*)\/(.*)\.git$/;
+    const match = url.match(regex);
+
+    if (match) {
+      return { repo: match[2] };
+    }
+    return { repo: "REPO" };
+  }
