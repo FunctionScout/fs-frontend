@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import DataTable from 'react-data-table-component';
 import Select from 'react-select';
 import { CodeBlock, github } from 'react-code-blocks';
-import { serviceDetails } from './MockData';
 
 export function ServiceDetail() {
     const { service_name } = useParams();
@@ -24,7 +23,7 @@ export function ServiceDetail() {
       } else if(selectedOption.value === 'functions') {
         return <Functions service_id={serviceId} service_name={service_name}/>
       } else if(selectedOption.value === 'unusedCode') {
-        return <UnusedCode service_id={serviceId} />
+        return <UnusedCode service_id={serviceId} service_name={service_name}/>
       }
     }
   
@@ -170,17 +169,38 @@ function Functions({ service_id, service_name }) {
   );
 }
 
-function UnusedCode({ service_name }) {
+function UnusedCode({ service_id, service_name }) {
   const columns = [
     {
       name: 'Name',
       selector: row => row.name,
     },
     {
-      name: 'GithubLink',
-      selector: row => row.githubLink,
+      name: 'Class',
+      selector: row => row.clazz,
     }
   ];
+
+  const [functions, setFunctions] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${service_id}/unused-code`);
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setFunctions(data.functions);
+      } catch (error) {
+        console.error("Error fetching webservice unused code: ", error);
+      }
+    };
+
+    fetchData();
+  }, [service_id]);
 
   return (
     <div>
@@ -188,7 +208,7 @@ function UnusedCode({ service_name }) {
 
       <DataTable
         columns={columns}
-        data={serviceDetails[service_name].unusedFunctions}
+        data={functions}
         expandableRows
         expandableRowsComponent={ExpandedUnusedFunction}
       />
@@ -197,22 +217,36 @@ function UnusedCode({ service_name }) {
 }
 
 function ExpandedUnusedFunction({ data }) {
-  const language = "java";
-  const showLineNumbers = true;
-  const code = `private void ${data.label}(int value, List<Object> objects) { 
-    for (Object obj: objects)  {
-      if (obj.val == value) {
-        System.out.println("Found it!");
+  const functionId = data.id;
+  const [functionDetail, setFunctionDetail] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/functions/${functionId}`);
+
+        if (!response.ok) {
+          throw new Error(`API request failed with status ${response.status}`);
+        }
+
+        const data = await response.json();
+        setFunctionDetail(data);
+      } catch (error) {
+        console.error("Error fetching function detail: ", error);
       }
-    }
-}`
+    };
+
+    fetchData();
+  }, [functionId]);
 
   return (
-    <CodeBlock
-        text={code}
-        language={language}
-        showLineNumbers={showLineNumbers}
-        theme={github}
-    />
+      <div>
+          <CodeBlock
+              text={functionDetail.signature}
+              language={"java"}
+              showLineNumbers={true}
+              theme={github}
+          />
+      </div>
   );
 }
